@@ -80,11 +80,13 @@ syn match permaHashtag `\(\_^\|\s*\)\zs#\a\w\+` contains=@PermaHashtagCluster
 syn match permaPar /\(([^\)]\+)\)/ contains=@PermaFormatTags
 syn match permaPar /\-\-[^.]\{-1,}\(\(\-\-\)\|\.\|?\)/ contains=@PermaFormatTags
 syn match permaPar /\s\+-[^.]\{-1,}\(\(-\s\+\)\|\.\|?\)/ contains=@PermaFormatTags
+syn match permaPar /\<\w\+\zs\.\w\+\>/ contains=@PermaFormatTags "filetype lowlighting
 syn match permaPar /\s\+-[^*_]\{-1,}[^.]$/ contains=@PermaFormatTags "for quotes ending in -author
 syn match permaPar /\s\+—[^.]\{-1,}\(\(—\s\+\)\|\.\|?\)/ contains=@PermaFormatTags "special kind of dash char
 	syn cluster PermaParCluster contains=permaPar
 	syn match permaParAlt /(\|)\|—\|\-/ containedin=@PermaParCluster contained
 syn match permaMath /\(:\|+\|\*\|=\|<\|>\|-\|\(=!\)\|\(\~=\)\|\(=\~\)\|\/\)\(\s\|$\)/
+syn match permaSeparator /|/
 
 syn match permaQuote /\(“[^”]\+”\)\|\("[^"]\+"\)/ contains=@PermaFormatTags
 	syn cluster PermaQuoteCluster contains=permaQuote
@@ -339,7 +341,6 @@ syn match permaLink /\w\@<!https\?:\/\/\S\+\v(\/|\a|\d|\?|\=|\#|\&|\!)\ze(\s|\_$
 				syn match permaPageExtension /\.\a\+/ containedin=@PermaPageCluster transparent contained conceal
 				syn match permaPageTitle `\v\w+\/?` containedin=@PermaPageCluster contained
 syn match permaLinkFile /\v<[^\/ ]+\.(jpg|png|gif|mov)>/
-
 
 syn match permaShortLink `[\w\_]\@<!\v[^/\@ \t_][^/\@ \t]*\.((com?)|net|org|gov|edu|ac)(\.\a\a)?[^, \t]*` contains=@PermaLinkCluster
 syn match permaEmail `\S\+\w@\w\+\.\w\S\+` contains=@PermaEmailCluster

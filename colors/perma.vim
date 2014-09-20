@@ -39,6 +39,8 @@ hi permaTab3 guibg=gray30
 hi permaTab2 guibg=gray35
 hi permaTab1 guibg=gray50
 
+hi permaSeparator guifg=gray40
+
 
 hi Strong				guifg=#C64646
 hi permaStrongAlt		guifg=#793C0B

@@ -145,17 +145,25 @@ map <leader>g :call OpenInGoogle()<CR>
 nmap <buffer> <leader>o :call PermaOpenFold()<CR>
 nmap <buffer> <leader>c :call PermaCloseFold()<CR>
 "search for a pattern at the beginning of a line ignoring special symbols like ;_*
-map <Leader><Space> /^;*_*\**\s*
+map <Leader><Space> /^;*#*_*\**\s*
 map <leader>c :call ListCWord()<CR>
 nmap <leader>s :set noscb<CR>:set nowrap<CR>0<C-W>v<C-W>lz+:set scb<CR><C-W>h:set scb<CR><C-W>lM
 nmap <Leader>q :syn off<CR>:syn on<CR>
-" @ marking
+
+" initial marking
 " delete initial @s
-nmap <leader>1 mzV:s/^\t*\zs@\+ \+//<CR>`z
-" add one @
+"nmap <leader>1 mzV:s/^\t*\zs@\+ \+//<CR>`z
+nmap <leader>1 mz^dw`z
+" prepend @ with space
 nmap <leader>2 mzI@ <Esc>`z
-" add 2 @@
-nmap <leader>3 mzI@<Esc>`z
+" prepend # with space
+nmap <leader>3 mzI# <Esc>`z
+" dupicate an initial char 
+nmap <leader>4 mz^ylp<Esc>`z
+
+" pasting that doesn't move you all the way to the right when pasting long
+" strings
+nmap <leader>v mz"*p<Esc>`z
 
 "nmap <leader>. :cope 40<CR>
 "map <leader>, :vimgrep /\c/ %<left><left><left>

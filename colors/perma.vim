@@ -21,9 +21,14 @@ hi Normal	guifg=White guibg=Black
 
 "group perma
 hi Tab	  			guibg=gray19
-hi Note	  			guifg=#f1ffa0
+hi permaBlockquote guifg=#f1ffa0
+hi Note	  			guifg=#f1ffa0 guibg=gray35
 	hi permaNoteAlt	guifg=#838a57 gui=bold
 hi Section			guibg=#FFD100 guifg=Black
+
+hi permaH1			guibg=#DD58B8 guifg=White
+hi permaH2			guibg=#BA489B guifg=White
+hi permaH3			guibg=#953A7C guifg=White
 
 hi permaBough1	guifg=white gui=reverse
 hi permaBough2 guifg=white gui=reverse
@@ -40,7 +45,6 @@ hi permaTab2 guibg=gray35
 hi permaTab1 guibg=gray50
 
 hi permaSeparator guifg=gray40
-
 
 hi Strong				guifg=#C64646
 hi permaStrongAlt		guifg=#793C0B

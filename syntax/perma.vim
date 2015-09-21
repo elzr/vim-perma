@@ -31,14 +31,14 @@ syn match permaUnit /[^( \t[]*#\?\d\+\([^ \)_\t;\]]*[^ ,.;*\)_?\t:\]]\)\?%\?/
 	syn cluster PermaUnitCluster contains=permaUnit,permaUnitAlt,permaUnitExp,permaCurrency,permaDate
 	syn match permaUnitAlt /\v\d|,|\.+/ containedin=@PermaUnitCluster contained
 	syn match permaUnitExp /\d\zs\(e\d\+\)\|\(mil\)/ containedin=@PermaUnitCluster contained
-	syn match permaDate /\v\c\S*(day|week|month|year|epoch|jan|feb|mar|may|apr|jun|june|jul|aug|sep|oct|nov|dec|ene|feb|mar|abr|ago|dic|mon|tue|wed|thu|fri|sat|sun)[^ ,.*\)_\t]*/ containedin=@PermaUnitCluster contains=@PermaDateCluster contained
+	syn match permaDate /\v\c\S*(msi|min|day|week|month|year|epoch|jan|feb|mar|may|apr|jun|june|jul|aug|sep|oct|nov|dec|ene|feb|mar|abr|ago|dic|mon|tue|wed|thu|fri|sat|sun)[^ ,.*\)_\t]*/ containedin=@PermaUnitCluster contains=@PermaDateCluster contained
 		syn cluster PermaDateCluster contains=permaDateAlt,permaDateTrailingPunctuation,permaDateEpoch,permaDateHour,permaDateDay
-		syn match permaDateAlt /\v\d+/ containedin=@permaDate contained
+		syn match permaDateAlt /\v\d|\.+/ containedin=@permaDate contained
 		syn match permaDateTrailingPunctuation /\v(\,|\.|\*)$/ containedin=@permaDate contained
 		syn match permaDateEpoch /\v(-\d+epoch)|(epoch:\d+)/ containedin=@permaDate contained
 		syn match permaDateDay /\v-\d{1,3}d-/ containedin=@permaDate contained
 		syn match permaDateHour /\v\d{1,2}h\d{1,2}m\d{1,2}s\d{1,3}ms-?\dutc/ containedin=@permaDate contained
-	syn match permaCurrency /\v\c\S*(\$|mxn|pesos?|gbp|aud|chf|btc|ltc|cny|czk|sek|eur|usd|jpy|thb)([^ .,;*\)_\t\]!?]*[^ ,.;*\)_\t\]!?])?/ containedin=@PermaUnitCluster contains=@PermaCurrencyCluster contained
+	syn match permaCurrency /\v\c\S*(\$|mxn|pesos?|gbp|aud|chf|btc|ltc|cny|czk|sek|eur|usd|jpy|thb)([^ ;*\)_\t\]!?]*[^ ,.;*\)_\t\]!?])?/ containedin=@PermaUnitCluster contains=@PermaCurrencyCluster contained
 		syn cluster PermaCurrencyCluster contains=permaCurrencyAlt,permaCurrencyExp,permaCurrencyTrailingPunctuation
 		syn match permaCurrencyExp /\(e\d\+\)\|\(mil\)/ containedin=@permaCurrency contained
 		syn match permaCurrencyAlt /\v\d|,|\.+/ containedin=@permaCurrency contained
@@ -53,16 +53,17 @@ syn match permaCreditCard /\v<((\d{4}\s\d{4}\s\d{4}\s\d{4})|(\d{16}))>/ contains
 	syn match permaDateYear /\v-?<(18|19|20)\d{2}s?>/
 	syn match permaDateHour /\v<\d{1,2}:\d{2}(:\d{2})?>/ contains=@PermaDateCluster
 	syn match permaDateHourAmPm /\v-?\~?<\d{1,2}(am|pm)(\d{2})?>/ contains=@PermaDateCluster
-	syn match permaDateHourHM /\v-?\~?<\d{1,2}(h|m)(\d{2}m)?>/ contains=@PermaDateCluster
+	syn match permaDateHourHM /\v-?\~?<\d{1,2}(h|m)(\d{2}m?)?>/ contains=@PermaDateCluster
 	syn match permaDateSlashed /\v<\d{1,2}\/\d{1,4}(\/\d{2,4})?>/ contains=@PermaDateCluster
 	syn match permaDateDayMonthPhrase /\v\c(\d{1,2} (de )?)<(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|aniversario|january|february|march|may|june|july|august|september|october|november|december)>( del )?( <(18|19|20)\d{2}>)?/ contains=@PermaDateCluster
 	syn match permaDateAgo /\v\c\d{1,2}\s*(year|month|day|hour|second)s? ago/ contains=@PermaDateCluster
 	syn match permaDateYearMonth /\v\c<(18|19|20)\d{2}> <(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|nov|dec|ago)>/ contains=@PermaDateCluster
 	syn match permaDateMonthYear /\v\c<(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|nov|dec|ago)> <(18|19|20)\d{2}>/ contains=@PermaDateCluster
 	syn match permaDateMonthDay /\v\c<(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|nov|dec|ago)>\.? <\d{1,2}(th|st)?>(,? <(18|19|20)\d{2}>)?/ contains=@PermaDateCluster
+	syn match permaDateTime /\v<\d{4}\-\d{2}[\d:+-\u]+>/ contains=@PermaDateCluster "example: 2014-12-04T23:12:02+00:00
 		
 "camelCaseLinks
-syn match permaInLink /\(\<\d*\l\+\u\w\+\)/
+syn match permaInLink /\(\<\d*\l\+\u[0-9A-Za-zñÑ]\+\)/
 		"forget about inlinks that start with an uppercase, they're probably
 		"noise \|\(\<\u\+\l\+\u\w\+\)
 	syn cluster PermaInLinkCluster contains=permaInLink
@@ -79,10 +80,11 @@ syn match permaHashtag `\(\_^\|\s*\)\zs#\a\w\+` contains=@PermaHashtagCluster
 					
 syn match permaPar /\(([^\)]\+)\)/ contains=@PermaFormatTags
 syn match permaPar /\-\-[^.]\{-1,}\(\(\-\-\)\|\.\|?\)/ contains=@PermaFormatTags
-syn match permaPar /\s\+-[^.]\{-1,}\(\(-\s\+\)\|\.\|?\)/ contains=@PermaFormatTags
-syn match permaPar /\<\w\+\zs\.\w\+\>/ contains=@PermaFormatTags "filetype lowlighting
-syn match permaPar /\s\+-[^*_]\{-1,}[^.]$/ contains=@PermaFormatTags "for quotes ending in -author
-syn match permaPar /\s\+—[^.]\{-1,}\(\(—\s\+\)\|\.\|?\)/ contains=@PermaFormatTags "special kind of dash char
+syn match permaPar /\s\+-[^\d-][^.]\{-1,}\(\(-\s\+\)\|\.\|?\)/ contains=@PermaFormatTags
+syn match permaPar /\s\+–[^\d–][^.]\{-1,}\(\(–\s\+\)\|\.\|?\)/ contains=@PermaFormatTags "another special kind of dash
+syn match permaPar /\<\w\+\zs\.\l\+\>/ contains=@PermaFormatTags "filetype lowlighting
+"syn match permaPar /\s\+-[^\d*_.][^.*_]\{-1,}[^.:!?]$/ contains=@PermaFormatTags "for quotes ending in -author
+syn match permaPar /\s\+(—|–)\D[^.]\{-1,}\(\(—\s\+\)\|\.\|?\)/ contains=@PermaFormatTags "special kind of dash char
 	syn cluster PermaParCluster contains=permaPar
 	syn match permaParAlt /(\|)\|—\|\-/ containedin=@PermaParCluster contained
 syn match permaMath /\(:\|+\|\*\|=\|<\|>\|-\|\(=!\)\|\(\~=\)\|\(=\~\)\|\/\)\(\s\|$\)/
@@ -92,7 +94,7 @@ syn match permaQuote /\(“[^”]\+”\)\|\("[^"]\+"\)/ contains=@PermaFormatTag
 	syn cluster PermaQuoteCluster contains=permaQuote
 	syn match permaQuoteAlt /"\|“\|”/ containedin=@PermaQuoteCluster contained
 syn region permaFold start=/[^\t]\@<=\t\+[^\t]/ end=/$/ display oneline
-syn cluster PermaFormatTags contains=permaLink,permaImage,permaEm,permaStrong,permaItalic,permaBold,permaCode,permaSubtext,permaSupertext,permaCitation,permaSection,permaInserted,permaSpan,permaNoPerma,permaGlyph,permaAcronym,permaHtml,permaInLink,permaPar,permaHashtag,permaAtAddress,permaQuote,permaUnit,permaDateYear,permaDateHour,permaDateHourAmPm,permaDateHourHM,permaDateSlashed,permaDateDayMonthPhrase,permaDateYearMonth,permaDateAgo,permaDateMonthYear,permaDateMonthDay,permaFootnote
+syn cluster PermaFormatTags contains=permaLink,permaImage,permaEm,permaStrong,permaItalic,permaBold,permaCode,permaSubtext,permaSupertext,permaCitation,permaSection,permaInserted,permaSpan,permaNoPerma,permaGlyph,permaAcronym,permaHtml,permaInLink,permaPar,permaHashtag,permaAtAddress,permaQuote,permaUnit,permaDateYear,permaDateHour,permaDateHourAmPm,permaDateHourHM,permaDateSlashed,permaDateDayMonthPhrase,permaDateYearMonth,permaDateAgo,permaDateMonthYear,permaDateMonthDay,permaDateTime,permaFootnote
 syn cluster PermaTabs contains=permaTab1,permaTab2,permaTab3,permaTab4,permaTab5,permaTab6,permaTab7
 syn cluster PermaEmTags contains=permaEm,permaItalic
 
@@ -104,24 +106,24 @@ syn region permaItalic oneline matchgroup=PermaWhatever start=/\w\@<!__\s\@!/ en
 
 syn region permaStrong oneline matchgroup=PermaWhatever start=/\w\@<!\*\s\@!/ end=/\s\@<!\*\w\@!/ concealends contains=@PermaFormatTags
 	syn cluster PermaStrongCluster contains=permaStrong
-	syn match permaStrongAlt /:\zs\s\+\S[^.]\+/ containedin=@PermaStrongCluster contained contains=@PermaEmTags
+	syn match permaStrongAlt /:\zs\s\+\S[^.*]\+\ze[")]?/ containedin=@PermaStrongCluster contained contains=@PermaEmTags
 	syn match permaStrongAlt /([^\)]\+)/ containedin=@PermaStrongCluster contained
 	syn match permaStrongAlt /\[[^\]]\+\]/ containedin=@PermaStrongCluster contained
-	syn match permaStrongHigh /\(\"\|“\)[^\"”]\+\(\"\|”\)/ containedin=@PermaStrongCluster contained
+	syn match permaStrongHigh /\(\"\|“\)[^\"”*]\+\(\"\|”\)/ containedin=@PermaStrongCluster contained
 	syn match permaStrongAlt /\-\-[^.]\{-1,}\(\(\-\-\)\|\.\|?\)/ containedin=@PermaStrongCluster contained "copied from permaPar
 		syn match permaStrongAlt /\s\+-[^.]\{-1,}\(\(-\s\+\)\|\.\|?\)/ containedin=@PermaStrongCluster contained
-		syn match permaStrongAlt /\s\+—[^.]\{-1,}\(\(—\s\+\)\|\.\|?\)/ containedin=@PermaStrongCluster contained
-		syn match permaStrongAlt /\s\+-[^*_]\{-1,}[^.]\ze[*_]*$/ containedin=@PermaStrongCluster contained "for quotes ending in -author
+		syn match permaStrongAlt /\s\+–[^\d–][^.]\{-1,}\(\(–\s\+\)\|\.\|?\)/ containedin=@PermaStrongCluster contained "another special kind of dash
+		syn match permaStrongAlt /\s\+-[^*_.-]\{-1,}[^.!?]\ze[*_]*$/ containedin=@PermaStrongCluster contained "for quotes ending in -author
 syn region permaBold oneline matchgroup=PermaWhatever start=/\w\@<!\*\*\s\@!/ end=/\s\@<!\*\*\w\@!/ concealends  contains=@PermaFormatTags
 	syn cluster PermaBoldCluster contains=permaBold
-	syn match permaBoldAlt /:\zs\s\+\S[^.]\+/ containedin=@PermaBoldCluster contained contains=@PermaEmTags
+	syn match permaBoldAlt /:\zs\s\+\S[^.]\+\ze[")]?/ containedin=@PermaBoldCluster contained contains=@PermaEmTags
 	syn match permaBoldAlt /([^\)]\+)/ containedin=@PermaBoldCluster contained
 	syn match permaBoldAlt /\[[^\]]\+\]/ containedin=@PermaBoldCluster contained
-	syn match permaBoldHigh /\(\"\|“\)[^\"”]\+\(\"\|”\)/ containedin=@PermaBoldCluster contained
+	syn match permaBoldHigh /\(\"\|“\)[^\"”*]\+\(\"\|”\)/ containedin=@PermaBoldCluster contained
 	syn match permaBoldAlt /\-\-[^.]\{-1,}\(\(\-\-\)\|\.\|?\)/ containedin=@PermaBoldCluster contained "copied from permaPar
 		syn match permaBoldAlt /\s\+-[^.]\{-1,}\(\(-\s\+\)\|\.\|?\)/ containedin=@PermaBoldCluster contained
-		syn match permaBoldAlt /\s\+—[^.]\{-1,}\(\(—\s\+\)\|\.\|?\)/ containedin=@PermaBoldCluster contained
-		syn match permaBoldAlt /\s\+-[^*_]\{-1,}[^.]\ze[*_]*$/ containedin=@PermaBoldCluster contained "for quotes ending in -author
+		syn match permaBoldAlt /\s\+–[^.–]\{-1,}\(\(–\s\+\)\|\.\|?\)/ containedin=@PermaBoldCluster contained  "another special kind of dash
+		syn match permaBoldAlt /\s\+-[^*._]\{-1,}[^.!?]\ze[*_]*$/ containedin=@PermaBoldCluster contained "for quotes ending in -author
 
 syn region permaCode oneline matchgroup=permaFormatTag start=/\w\@<!@\s\@!/ end=/\s\@<!@\w\@!/
 syn region permaSubtext oneline matchgroup=permaFormatTag start=/\w\@<!\~\s\@!/ end=/\s\@<!\~\w\@!/
@@ -228,6 +230,7 @@ if version >= 508 || !exists("did_perma_syn_inits")
   PermaHiLink permaDateAgo permaDate
   PermaHiLink permaDateMonthYear permaDate
   PermaHiLink permaDateMonthDay permaDate
+  PermaHiLink permaDateTime permaDate
   PermaHiLink permaDateYear permaDateAlt
 
   "PermaHiLink permaLink Underlined
@@ -289,8 +292,10 @@ syn match permaTab7 /\(^\t\{6}\)\@<=\t\+/
 
 command! -nargs=+ HiLink hi def <args>
 
-syn match permaBough1 /^[^:.]\{1,50}\ze\:$/ contains=@PermaFormatTags
-syn match permaBough2 /^\t[^:.\t]\{1,50}\ze\:$/ contains=@PermaFormatTags
+syn match permaBough1 /^[^:.]\{1,200}\ze\:$/ contains=@PermaFormatTags
+"trying to extend it to decimals in digits
+"/\([^:.]\)\|\([^:.]*\d\.[ \d]?[^:.]*\)\ze\:/"
+syn match permaBough2 /^\t[^:.\t]\{1,200}\ze\:$/ contains=@PermaFormatTags
 syn match permaBough3 /^\t\{2}[^:.\t]\+\ze\:$/ contains=@PermaFormatTags
 syn match permaBough4 /^\t\{3}[^:.\t]\+\ze\:$/ contains=@PermaFormatTags
 
@@ -313,9 +318,14 @@ HiLink permaFold guifg=gray60
 "HiLink permaAfterTab7 guifg=gray40
 
 syn match permaDate /\/\d\{10}$/
-"Hilites
-syn region permaSection oneline matchgroup=permaFormatTag start=/^\s*;/ end=/$/
-syn match permaNote /^\s*>.*/ contains=@PermaFormatTags
+
+"Sections
+syn region permaSection oneline matchgroup=permaFormatTag contains=@PermaInLinkCluster start=/^\s*;/ end=/$/
+syn region permaH1 oneline matchgroup=permaFormatTag contains=@PermaInLinkCluster start=/^\s*#\s\+/ end=/$/
+syn region permaH2 oneline matchgroup=permaFormatTag contains=@PermaInLinkCluster start=/^\s*##\s\+/ end=/$/
+syn region permaH3 oneline matchgroup=permaFormatTag contains=@PermaInLinkCluster start=/^\s*###\s\+/ end=/$/
+
+syn match permaBlockQuote /^\s*>.*/ contains=@PermaFormatTags
 syn match permaNote /\[[^\]]\+\]/ contains=@PermaFormatTags
 	syn cluster PermaNoteCluster contains=permaNote
 	syn match permaNoteAlt />\|\[\|\]/ containedin=@PermaNoteCluster contained
@@ -357,8 +367,7 @@ syn match permaDoneAction /@@ \S.*$/ contains=@PermaDoneActionCluster
 	syn cluster PermaDoneActionCluster contains=permaDoneAction
 	syn match permaDoneActionAlt /@@ \S\+/ containedin=@PermaDoneActionCluster contained
 
-
 syn match permaParagraphDefined /\(:\)\s\S[^.:]\+\(\.\|?\|$\|!\)/ contains=@PermaFormatTags
-syn match permaDefined /\v\s*[^.:\=_\t@]{-1,}(\:|\=)\zs(\s|$)/ contains=@PermaFormatTags
-	syn cluster PermaDefinedCluster contains=permaDefined
-	syn match permaDefinedAlt /\v \ze(\:|\=)/ containedin=@PermaDefinedCluster contained
+"syn match permaDefined /\v[^.:\=_\t@ ]{-1,}\s*(\:|\=)(\s|$)/ contains=@PermaFormatTags
+	"syn cluster PermaDefinedCluster contains=permaDefined
+	"syn match permaDefinedAlt /\v \ze(\:|\=)/ containedin=@PermaDefinedCluster contained

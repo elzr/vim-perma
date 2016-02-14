@@ -139,6 +139,55 @@ function! OpenInGoogle()
 endfunction
 map <buffer> <2-LeftMouse> :call BetterDoubleClick()<CR>
 
+function! Toc(...)
+    if a:0 > 0
+        let l:window_type = a:1
+    else
+        let l:window_type = 'vertical'
+    endif
+
+    try
+        silent lvimgrep /\(^\S.*\(\n[=-]\+\n\)\@=\|^#\+\)/ %
+    catch /E480/
+        echom "Toc: No headers."
+        return
+    endtry
+
+    if l:window_type ==# 'horizontal'
+        lopen
+    elseif l:window_type ==# 'vertical'
+        vertical lopen
+        let &winwidth=(&columns/4)
+    elseif l:window_type ==# 'tab'
+        tab lopen
+    else
+        lopen
+    endif
+    setlocal modifiable
+    for i in range(1, line('$'))
+        " this is the location-list data for the current item
+        let d = getloclist(0)[i-1]
+        " atx headers
+        if match(d.text, "^#") > -1
+            let l:level = len(matchstr(d.text, '#*', 'g'))-1
+            let d.text = substitute(d.text, '\v^#*[ ]*', '', '')
+            let d.text = substitute(d.text, '\v[ ]*#*$', '', '')
+        " setex headers
+        else
+            let l:next_line = getbufline(bufname(d.bufnr), d.lnum+1)
+            if match(l:next_line, "=") > -1
+                let l:level = 0
+            elseif match(l:next_line, "-") > -1
+                let l:level = 1
+            endif
+        endif
+        call setline(i, repeat('  ', l:level). d.text)
+    endfor
+    setlocal nomodified
+    setlocal nomodifiable
+    normal! gg
+endfunction
+
 "LEADER commands
 map <leader>k :call BetterDoubleClick()<CR>
 map <leader>g :call OpenInGoogle()<CR>
@@ -149,6 +198,9 @@ map <Leader><Space> /^;*#*_*\**\s*
 map <leader>c :call ListCWord()<CR>
 nmap <leader>s :set noscb<CR>:set nowrap<CR>0<C-W>v<C-W>lz+:set scb<CR><C-W>h:set scb<CR><C-W>lM
 nmap <Leader>q :syn off<CR>:syn on<CR>
+
+command! -buffer Toc call Toc()
+nmap <leader>l :call Toc()<CR>
 
 " initial marking
 " delete initial @s

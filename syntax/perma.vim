@@ -32,11 +32,12 @@ syn match permaUnit /[^( \t[]*#\?\d\+\([^ \)_\t;\]]*[^ ,.;*\)_?\t:\]]\)\?%\?/
 	syn match permaUnitAlt /\v\d|,|\.+/ containedin=@PermaUnitCluster contained
 	syn match permaUnitExp /\d\zs\(e\d\+\)\|\(mil\)/ containedin=@PermaUnitCluster contained
 	syn match permaDate /\v\c\S*(msi|min|day|week|month|year|epoch|jan|feb|mar|may|apr|jun|june|jul|aug|sep|oct|nov|dec|ene|feb|mar|abr|ago|dic|mon|tue|wed|thu|fri|sat|sun)[^ ,.*\)_\t]*/ containedin=@PermaUnitCluster contains=@PermaDateCluster contained
-		syn cluster PermaDateCluster contains=permaDateAlt,permaDateTrailingPunctuation,permaDateEpoch,permaDateHour,permaDateDay
+		syn cluster PermaDateCluster contains=permaDateAlt,permaDateTrailingPunctuation,permaDateEpoch,permaDateHour,permaDateDay,permaDateCELabel
 		syn match permaDateAlt /\v\d|\.+/ containedin=@permaDate contained
 		syn match permaDateTrailingPunctuation /\v(\,|\.|\*)$/ containedin=@permaDate contained
 		syn match permaDateEpoch /\v(-\d+epoch)|(epoch:\d+)/ containedin=@permaDate contained
 		syn match permaDateDay /\v-\d{1,3}d-/ containedin=@permaDate contained
+		syn match permaDateCELabel /\v\c(bce?|ce)/ containedin=@permaDate contained
 		syn match permaDateHour /\v\d{1,2}h\d{1,2}m\d{1,2}s\d{1,3}ms-?\dutc/ containedin=@permaDate contained
 	syn match permaCurrency /\v\c\S*(\$|mxn|pesos?|gbp|aud|chf|btc|ltc|cny|czk|sek|eur|usd|jpy|thb)([^ ;*\)_\t\]!?]*[^ ,.;*\)_\t\]!?])?/ containedin=@PermaUnitCluster contains=@PermaCurrencyCluster contained
 		syn cluster PermaCurrencyCluster contains=permaCurrencyAlt,permaCurrencyExp,permaCurrencyTrailingPunctuation
@@ -50,6 +51,7 @@ syn match permaCreditCard /\v<((\d{4}\s\d{4}\s\d{4}\s\d{4})|(\d{16}))>/ contains
 
 
 "Date/Time variants
+	syn match permaDateCE /\v\c-?<(\d|,){1,7}(bce?|ce)>/ contains=@PermaDateCluster
 	syn match permaDateYear /\v-?<(18|19|20)\d{2}s?>/
 	syn match permaDateHour /\v<\d{1,2}:\d{2}(:\d{2})?>/ contains=@PermaDateCluster
 	syn match permaDateHourAmPm /\v-?\~?<\d{1,2}(am|pm)(\d{2})?>/ contains=@PermaDateCluster
@@ -82,7 +84,7 @@ syn match permaPar /\(([^\)]\+)\)/ contains=@PermaFormatTags
 syn match permaPar /\-\-[^.]\{-1,}\(\(\-\-\)\|\.\|?\)/ contains=@PermaFormatTags
 syn match permaPar /\s\+-[^\d-][^.]\{-1,}\(\(-\s\+\)\|\.\|?\)/ contains=@PermaFormatTags
 syn match permaPar /\s\+–[^\d–][^.]\{-1,}\(\(–\s\+\)\|\.\|?\)/ contains=@PermaFormatTags "another special kind of dash
-syn match permaPar /\<\w\+\zs\.\l\+\>/ contains=@PermaFormatTags "filetype lowlighting
+"syn match permaPar /\<\w\+\zs\.\l\+\>/ contains=@PermaFormatTags "filetype lowlighting
 "syn match permaPar /\s\+-[^\d*_.][^.*_]\{-1,}[^.:!?]$/ contains=@PermaFormatTags "for quotes ending in -author
 syn match permaPar /\s\+(—|–)\D[^.]\{-1,}\(\(—\s\+\)\|\.\|?\)/ contains=@PermaFormatTags "special kind of dash char
 	syn cluster PermaParCluster contains=permaPar
@@ -94,7 +96,7 @@ syn match permaQuote /\(“[^”]\+”\)\|\("[^"]\+"\)/ contains=@PermaFormatTag
 	syn cluster PermaQuoteCluster contains=permaQuote
 	syn match permaQuoteAlt /"\|“\|”/ containedin=@PermaQuoteCluster contained
 syn region permaFold start=/[^\t]\@<=\t\+[^\t]/ end=/$/ display oneline
-syn cluster PermaFormatTags contains=permaLink,permaImage,permaEm,permaStrong,permaItalic,permaBold,permaCode,permaSubtext,permaSupertext,permaCitation,permaSection,permaInserted,permaSpan,permaNoPerma,permaGlyph,permaAcronym,permaHtml,permaInLink,permaPar,permaHashtag,permaAtAddress,permaQuote,permaUnit,permaDateYear,permaDateHour,permaDateHourAmPm,permaDateHourHM,permaDateSlashed,permaDateDayMonthPhrase,permaDateYearMonth,permaDateAgo,permaDateMonthYear,permaDateMonthDay,permaDateTime,permaFootnote
+syn cluster PermaFormatTags contains=permaLink,permaImage,permaEm,permaStrong,permaItalic,permaBold,permaCode,permaSubtext,permaSupertext,permaCitation,permaSection,permaInserted,permaSpan,permaNoPerma,permaGlyph,permaAcronym,permaHtml,permaInLink,permaPar,permaHashtag,permaAtAddress,permaQuote,permaUnit,permaDateYear,permaDateCE,permaDateHour,permaDateHourAmPm,permaDateHourHM,permaDateSlashed,permaDateDayMonthPhrase,permaDateYearMonth,permaDateAgo,permaDateMonthYear,permaDateMonthDay,permaDateTime,permaFootnote
 syn cluster PermaTabs contains=permaTab1,permaTab2,permaTab3,permaTab4,permaTab5,permaTab6,permaTab7
 syn cluster PermaEmTags contains=permaEm,permaItalic
 
@@ -221,6 +223,8 @@ if version >= 508 || !exists("did_perma_syn_inits")
   PermaHiLink permaBrace Special
   PermaHiLink permaRestOfBlock Number
 
+  PermaHiLink permaDateCE permaDateAlt
+  PermaHiLink permaDateCELabel permaDate
   PermaHiLink permaDateDayMonthPhrase permaDate
   PermaHiLink permaDateSlashed permaDate
   PermaHiLink permaDateHour permaDate
@@ -338,7 +342,7 @@ syn match permaLink /\w\@<!https\?:\/\/\S\+\v(\/|\a|\d|\?|\=|\#|\&|\!)\ze(\s|\_$
 	syn cluster PermaLinkCluster contains=permaLinkAlt,permaStartLink,permaMiddleLink,permaEndLink,permaSubReddit,permaSubDomain,permaLinkTrailingSlash
 		syn match permaMiddleLink /\v(\/r\/[^\/]+)?\zs\/[^ \t\.]*\ze\/[^ \_$]/ containedin=@PermaLinkCluster transparent conceal
 			syn match permaSubReddit /\/r\/\zs[^\/]\+\ze\// containedin=@PermaLinkCluster contained
-		syn match permaLinkAlt `\v(\w|-)+\ze((\.((com?)|net|org|gov|edu|ac|info|me|name)(\.\a\a)?)|(\.\a\a))( |\_$|/)` containedin=@PermaLinkCluster contained
+		syn match permaLinkAlt `\v(\w|-)+\ze((\.((com?)|mx|net|org|gov|edu|ac|info|me|name)(\.\a\a)?)|(\.\a\a))( |\_$|/)` containedin=@PermaLinkCluster contained
 		syn match permaSubDomain /\v[^.\/ ]+\ze\.[^.\/ ]+\./ containedin=@PermaLinkCluster contained
 		"syn match permaLinkTrailingSlash /\/\ze\(.*\/\)\@!.*$/ containedin=@PermaLinkCluster contained transparent conceal
 			"had to resort to a lot of complexity to really get the last slash! http://stackoverflow.com/questions/13302500/how-to-go-to-the-last-match-of-a-vim-search-pattern
@@ -352,7 +356,7 @@ syn match permaLink /\w\@<!https\?:\/\/\S\+\v(\/|\a|\d|\?|\=|\#|\&|\!)\ze(\s|\_$
 				syn match permaPageTitle `\v\w+\/?` containedin=@PermaPageCluster contained
 syn match permaLinkFile /\v<[^\/ ]+\.(jpg|png|gif|mov)>/
 
-syn match permaShortLink `[\w\_]\@<!\v[^/\@ \t_][^/\@ \t]*\.((com?)|net|org|gov|edu|ac)(\.\a\a)?[^, \t]*` contains=@PermaLinkCluster
+syn match permaShortLink `[\w\_]\@<!\v[^/\@ \t_][^/\@ \t]*\.((com?)|mx|net|org|gov|edu|ac)(\.\a\a)?[^, \t]*` contains=@PermaLinkCluster
 syn match permaEmail `\S\+\w@\w\+\.\w\S\+` contains=@PermaEmailCluster
 	syn cluster PermaEmailCluster contains=permaEmailAlt
 		syn match permaEmailAlt /\S\+\ze@/ containedin=@PermaEmailCluster contained
